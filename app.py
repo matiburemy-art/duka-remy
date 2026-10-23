@@ -21,6 +21,13 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+with app.app_context():
+    db.create_all()
+    # Créer admin si existe pas
+    if not User.query.filter_by(username='admin').first():
+        admin = User(username='admin', password='admin123', role='admin')
+        db.session.add(admin)
+        db.session.commit()
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
