@@ -21,13 +21,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-with app.app_context():
-    db.create_all()
-    # Créer admin si existe pas
-    if not User.query.filter_by(username='admin').first():
-        admin = User(username='admin', password='admin123', role='admin')
-        db.session.add(admin)
-        db.session.commit()
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -162,7 +155,7 @@ def achat_stock(id):
         return redirect(url_for('stock'))
     return render_template('achat_stock.html', p=p)
 
-# CLIENTS - TON BLOC
+# CLIENTS
 @app.route('/clients', methods=['GET', 'POST'])
 @login_required
 def clients():
@@ -324,10 +317,14 @@ def delete_user(id):
     flash("User supprimé", "success")
     return redirect(url_for('users'))    
 
+# CREATION DB - UNE SEULE FOIS A LA FIN
 with app.app_context():
     db.create_all()
     if not User.query.filter_by(username='remy').first():
         db.session.add(User(username='remy', password='2005', role='patron'))
+        db.session.commit()
+    if not User.query.filter_by(username='admin').first():
+        db.session.add(User(username='admin', password='admin123', role='patron'))
         db.session.commit()
 
 if __name__ == '__main__':
