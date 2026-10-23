@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Dashboard - DUKA MATIBU BUSINESS</title>
+<style>
+body{font-family:Arial;background:#f1f5f9;padding:20px;margin:0}
+.top{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:15px 20px;border-radius:12px;box-shadow:0 2px 8px #0001}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+.box{background:#fff;padding:20px;border-radius:12px;text-align:center;box-shadow:0 2px 8px #0001}
+.box b{font-size:24px;display:block;margin-top:5px}
+.btns{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.btns a{padding:18px 22px;border-radius:12px;text-decoration:none;font-weight:700;flex:1;text-align:center;min-width:120px}
+.btn-logout{background:#fee2e2;color:#991b1b;padding:8px 14px;border-radius:8px;text-decoration:none;font-weight:700;font-size:13px}
+</style>
+</head>
+<body>
+
+<div class="top">
+<div>
+<b>Bonjour {{ current_user.username }} 👋</b><br>
+<small style="color:#64748b">Rôle: {{ current_user.role }}</small>
+</div>
+<div>
+<a class="btn-logout" href="/logout">🚪 Déconnexion</a>
+</div>
+</div>
+
+<div class="grid">
+<div class="box"><span>📦 Produits</span><b>{{ produits|length }}</b></div>
+<div class="box"><span>👥 Clients dettes</span><b>{{ clients|length }}</b></div>
+<div class="box"><span>💰 CA Aujourd'hui</span><b>{{ ca_jour }} FBU</b></div>
+</div>
+
+<div class="btns">
+<a href="/vente" style="background:#0f172a;color:#fff">🛒 Nouvelle Vente</a>
+<a href="/stock" style="background:#fff;color:#0f172a">📦 Stock</a>
+<a href="/clients" style="background:#fff;color:#0f172a">👥 Clients</a>
+<a href="/rapport" style="background:#fff;color:#0f172a">📊 Rapport</a>
+{% if current_user.role == 'patron' %}
+<a href="/users" style="background:#e0e7ff;color:#3730a3">👥 Users</a>
+{% endif %}
+</div>
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stock - DUKA PRO</title>
+<style>
+body{font-family:Arial;background:#f1f5f9;padding:20px;margin:0}
+.header{display:flex;justify-content:space-between;align-items:center}
+.form-add{background:#fff;padding:15px;border-radius:12px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr auto;gap:8px;margin:15px 0}
+.form-add input{padding:11px;border:1.5px solid #e2e8f0;border-radius:8px}
+.form-add button{background:#0f172a;color:#fff;border:none;border-radius:8px;padding:11px 15px;font-weight:800;cursor:pointer}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden}
+th{padding:12px;background:#f8fafc;text-align:left;font-size:12px;color:#64748b}
+td{padding:12px;border-top:1px solid #f1f5f9;font-size:13px}
+.flash{padding:10px;border-radius:8px;margin:10px 0}
+.success{background:#dcfce7;color:#166534}
+.danger{background:#fee2e2;color:#991b1b}
+.btn{padding:6px 9px;border-radius:7px;text-decoration:none;font-size:11px;font-weight:700;display:inline-block}
+.btn-edit{background:#dbeafe;color:#1e40af}
+.btn-del{background:#fee2e2;color:#991b1b}
+.btn-achat{background:#dcfce7;color:#166534}
+@media(max-width:900px){.form-add{grid-template-columns:1fr 1fr} table{font-size:11px}}
+</style>
+</head>
+<body>
+
+<div class="header">
+<h2>📦 Stock</h2>
+<a href="/" style="text-decoration:none;color:#0f172a;font-weight:700">🏠 Dashboard</a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}{% for cat, msg in messages %}<div class="flash {{cat}}">{{msg}}</div>{% endfor %}{% endif %}
+{% endwith %}
+
+<form class="form-add" method="POST">
+  <input name="nom" placeholder="Nom ex: Primus" required>
+  <input name="code" placeholder="Code ex: 125">
+  <input name="achat" type="number" placeholder="Achat" required>
+  <input name="vente" type="number" placeholder="Vente" required>
+  <input name="stock" type="number" placeholder="Stock" required>
+  <input name="min" type="number" placeholder="Min" value="5" required>
+  <button type="submit">+ Ajouter</button>
+</form>
+
+<table>
+<tr>
+  <th>NOM</th>
+  <th>CODE</th>
+  <th>ACHAT</th>
+  <th>VENTE</th>
+  <th style="background:#dcfce7">BÉNÉFICE</th>
+  <th>STOCK</th>
+  <th>ACTION</th>
+</tr>
+{% for p in produits %}
+<tr>
+  <td><b>{{ p.nom }}</b></td>
+  <td>{{ p.code_barre or '-' }}</td>
+  <td>{{ p.prix_achat }} FBU</td>
+  <td>{{ p.prix_vente }} FBU</td>
+  <td style="background:#f0fdf4;color:#16a34a;font-weight:800">{{ p.prix_vente - p.prix_achat }} FBU</td>
+  <td>{% if p.stock <= p.stock_min %}<b style="color:red">{{ p.stock }}</b>{% else %}<b>{{ p.stock }}</b>{% endif %}</td>
+  <td style="display:flex;gap:4px;flex-wrap:wrap">
+    <a class="btn btn-achat" href="/stock/achat/{{ p.id }}">📥 Achat</a>
+    <a class="btn btn-edit" href="/stock/edit/{{ p.id }}">✏️</a>
+    <a class="btn btn-del" href="/stock/delete/{{ p.id }}" onclick="return confirm('Supprimer {{ p.nom }} ?')">🗑️</a>
+  </td>
+</tr>
+{% endfor %}
+</table>
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modifier Client</title>
+<style>
+body{font-family:Arial;background:#f1f5f9;padding:20px;margin:0}
+.card{background:#fff;padding:25px;border-radius:15px;max-width:400px;margin:20px auto}
+input{width:100%;padding:12px;margin:8px 0;border:1.5px solid #e2e8f0;border-radius:8px;box-sizing:border-box}
+button{width:100%;padding:14px;background:#0f172a;color:#fff;border:none;border-radius:9px;font-weight:800;margin-top:10px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="card">
+<h2>✏️ Modifier {{ c.nom }}</h2>
+<form method="POST" action="/clients/edit/{{ c.id }}">
+<label>Nom</label>
+<input name="nom" value="{{ c.nom }}" required>
+<label>Téléphone</label>
+<input name="telephone" value="{{ c.telephone }}">
+<label>Dette totale (FBU)</label>
+<input name="dette" type="number" value="{{ c.dette_totale }}" required>
+<button type="submit">✅ Enregistrer</button>
+</form>
+<a href="/clients" style="display:block;text-align:center;margin-top:15px;text-decoration:none;color:#64748b">Annuler</a>
+</div>
+</body>
+</html>

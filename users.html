@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Users - DUKA PRO</title>
+<style>
+body{font-family:Arial;background:#f1f5f9;padding:15px;margin:0}
+.card{background:#fff;padding:15px;border-radius:12px;margin-bottom:15px;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
+th,td{padding:12px;text-align:left;border-top:1px solid #f1f5f9}
+input,select{padding:11px;border:1.5px solid #e2e8f0;border-radius:8px}
+.btn-del{background:#fee2e2;color:#991b1b;padding:6px 10px;border-radius:20px;text-decoration:none;font-weight:700}
+</style>
+</head>
+<body>
+<a href="/" style="text-decoration:none;font-weight:700">← Dashboard</a>
+<h2>👤 Gestion Users</h2>
+
+<form method="POST" action="/users" class="card" style="display:flex;gap:8px;flex-wrap:wrap">
+<input name="username" placeholder="Username" required>
+<input name="password" placeholder="Password" required>
+<select name="role">
+<option value="vendeur">Vendeur</option>
+<option value="patron">Patron</option>
+</select>
+<button type="submit" style="background:#0f172a;color:#fff;border:none;padding:11px 15px;border-radius:8px;font-weight:800">+ Ajouter User</button>
+</form>
+
+<table>
+<tr style="background:#f8fafc"><th>USERNAME</th><th>ROLE</th><th>ACTION</th></tr>
+{% for u in users %}
+<tr>
+<td><b>{{u.username}}</b></td>
+<td>{{u.role}}</td>
+<td><a class="btn-del" href="/users/delete/{{u.id}}">🗑️</a></td>
+</tr>
+{% endfor %}
+</table>
+</body>
+</html>

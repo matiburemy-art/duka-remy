@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rapport - DUKA PRO</title>
+<style>
+body{font-family:Arial;background:#f1f5f9;padding:15px;margin:0}
+.top{display:flex;justify-content:space-between;align-items:center}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:15px}
+.card{background:#fff;padding:18px;border-radius:14px;box-shadow:0 2px 8px #0001}
+.card h4{margin:0 0 10px 0;color:#64748b;font-size:12px;text-transform:uppercase}
+.card b{font-size:20px}
+.benef{color:#16a34a}
+.ca{color:#0f172a}
+.alert{background:#fff;padding:15px;border-radius:12px;margin-top:15px}
+table{width:100%;border-collapse:collapse;margin-top:8px}
+th,td{padding:10px;text-align:left;font-size:13px;border-top:1px solid #f1f5f9}
+@media(max-width:700px){.grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<div class="top">
+<a href="/" style="text-decoration:none;font-weight:700">← Dashboard</a>
+<h2 style="margin:0">📊 Rapport Bénéfice</h2>
+</div>
+
+<div class="grid">
+<div class="card">
+<h4>Aujourd'hui</h4>
+<b class="ca">{{data.jour.ca}} FBU</b><br>
+<small>CA</small><br>
+<b class="benef">+ {{data.jour.benef}} FBU</b><br>
+<small>BÉNÉFICE</small><br>
+<small>{{data.jour.nb}} ventes</small>
+</div>
+
+<div class="card">
+<h4>Cette Semaine</h4>
+<b class="ca">{{data.semaine.ca}} FBU</b><br>
+<small>CA</small><br>
+<b class="benef">+ {{data.semaine.benef}} FBU</b><br>
+<small>BÉNÉFICE</small><br>
+<small>{{data.semaine.nb}} ventes</small>
+</div>
+
+<div class="card">
+<h4>Ce Mois</h4>
+<b class="ca">{{data.mois.ca}} FBU</b><br>
+<small>CA</small><br>
+<b class="benef">+ {{data.mois.benef}} FBU</b><br>
+<small>BÉNÉFICE</small><br>
+<small>{{data.mois.nb}} ventes</small>
+</div>
+
+<div class="card" style="background:#0f172a;color:#fff">
+<h4 style="color:#94a3b8">Cette Année</h4>
+<b style="color:#fff">{{data.annee.ca}} FBU</b><br>
+<small style="color:#94a3b8">CA</small><br>
+<b style="color:#4ade80">+ {{data.annee.benef}} FBU</b><br>
+<small style="color:#94a3b8">BÉNÉFICE</small><br>
+<small style="color:#94a3b8">{{data.annee.nb}} ventes</small>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:15px">
+<div class="alert">
+<h3 style="margin:0;color:#dc2626">⚠️ Stock Faible</h3>
+{% if faibles %}
+<table><tr><th>Produit</th><th>Stock</th><th>Min</th></tr>
+{% for p in faibles %}<tr><td>{{p.nom}}</td><td style="color:red;font-weight:700">{{p.stock}}</td><td>{{p.stock_min}}</td></tr>{% endfor %}
+</table>
+{% else %}<p style="color:#16a34a">Tout stock OK ✅</p>{% endif %}
+</div>
+
+<div class="alert">
+<h3 style="margin:0;color:#d97706">📒 Dettes Clients</h3>
+{% if dettes %}
+<table><tr><th>Client</th><th>Dette</th></tr>
+{% for c in dettes %}<tr><td>{{c.nom}}</td><td style="color:red;font-weight:700">{{c.dette_totale}} FBU</td></tr>{% endfor %}
+</table>
+<p style="font-weight:800">TOTAL DETTES: {{ dettes|sum(attribute='dette_totale') }} FBU</p>
+{% else %}<p style="color:#16a34a">Aucune dette ✅</p>{% endif %}
+</div>
+</div>
+
+<div class="alert">
+<h3>🧾 Ventes d'Aujourd'hui</h3>
+{% if ventes %}
+<table><tr><th>Heure</th><th>Total</th><th>Bénéfice</th><th>Type</th></tr>
+{% for v in ventes %}<tr><td>{{v.date.strftime('%H:%M')}}</td><td>{{v.total}} FBU</td><td style="color:#16a34a;font-weight:700">+{{v.benefice}}</td><td>{{v.type_paiement}}</td></tr>{% endfor %}
+</table>
+{% else %}<p>Aucune vente aujourd'hui</p>{% endif %}
+</div>
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Caisse - DUKA PRO</title>
+<style>
+body{font-family:Arial;background:#f1f5f9;margin:0;display:flex;height:100vh}
+.left{flex:1;background:#fff;margin:10px;border-radius:15px;padding:15px;overflow:auto}
+.right{width:360px;background:#0f172a;color:#fff;margin:10px;border-radius:15px;padding:15px;display:flex;flex-direction:column}
+input#search{width:100%;padding:16px;border-radius:10px;border:2px solid #e2e8f0;font-size:16px}
+.prod{padding:12px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;cursor:pointer}
+.prod:hover{background:#f8fafc}
+.cart-item{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #1e293b}
+.total{font-size:32px;font-weight:800;margin:15px 0}
+.btn{padding:15px;border-radius:10px;border:none;font-weight:800;cursor:pointer;width:100%;margin-top:8px;font-size:16px}
+.btn-cash{background:#22c55e;color:#fff}
+.btn-dette{background:#f59e0b;color:#fff}
+</style>
+</head>
+<body>
+<div class="left">
+  <h2>🛒 Caisse DUKA MATIBU BUSINESS</h2>
+  <input id="search" placeholder="Scanner code barre ou taper nom produit..." autofocus>
+  <div id="results"></div>
+</div>
+<div class="right">
+  <h3>Panier</h3>
+  <div id="cart" style="flex:1"></div>
+  <div class="total" id="total">0 FBU</div>
+  <select id="client" style="padding:10px;border-radius:8px;margin-bottom:8px;display:none">
+    <option value="">Choisir client dette</option>
+    {% for c in clients %}<option value="{{c.id}}">{{c.nom}} ({{c.dette_totale}} FBU)</option>{% endfor %}
+  </select>
+  <button class="btn btn-cash" onclick="payer('cash')">💵 PAYER CASH</button>
+  <button class="btn btn-dette" onclick="toggleDette()">📒 VENTE DETTE</button>
+  <button id="btn-dette-confirm" class="btn btn-dette" style="display:none;background:#ef4444" onclick="payer('dette')">Confirmer Dette</button>
+</div>
+
+<script>
+let cart=[]
+const search=document.getElementById('search')
+const results=document.getElementById('results')
+
+search.addEventListener('input', async()=>{
+  if(search.value.length<1){results.innerHTML='';return}
+  let res=await fetch(`/api/produits/search?q=${search.value}`)
+  let data=await res.json()
+  results.innerHTML=data.map(p=>`<div class="prod" onclick="add(${p.id},'${p.nom}',${p.prix})"><span>${p.nom} <small>(${p.stock})</small></span><b>${p.prix} FBU</b></div>`).join('')
+})
+
+function add(id,nom,prix){
+  let f=cart.find(c=>c.id==id)
+  if(f){f.qty++}else{cart.push({id,nom,prix,qty:1})}
+  render()
+  search.value='';results.innerHTML='';search.focus()
+}
+function render(){
+  let html=cart.map(c=>`<div class="cart-item"><span>${c.nom} x${c.qty}</span><span>${c.prix*c.qty}</span></div>`).join('')
+  document.getElementById('cart').innerHTML=html
+  let tot=cart.reduce((a,b)=>a+b.prix*b.qty,0)
+  document.getElementById('total').innerText=tot+' FBU'
+}
+function toggleDette(){
+  document.getElementById('client').style.display='block'
+  document.getElementById('btn-dette-confirm').style.display='block'
+}
+async function payer(type){
+  if(cart.length==0)return alert('Panier vide')
+  let client_id=document.getElementById('client').value
+  if(type=='dette' && !client_id)return alert('Choisis le client')
+  let res=await fetch('/api/vente/create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:cart.map(c=>({id:c.id,qty:c.qty,prix:c.prix})),type_paiement:type,client_id:client_id})})
+  let d=await res.json()
+  if(d.success){alert('Vente réussie: '+d.total+' FBU');cart=[];render();location.reload()}
+  else alert(d.error)
+}
+</script>
+</body>
+</html>

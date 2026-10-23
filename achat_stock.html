@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="viewport" content="width=device-width, initial-scale=1"><title>Achat - DUKA PRO</title>
+<style>
+body{font-family:Arial;background:#f1f5f9;padding:20px;margin:0}
+.card{background:#fff;padding:25px;border-radius:15px;max-width:400px;margin:auto}
+input{width:100%;padding:12px;margin:8px 0;border:1.5px solid #e2e8f0;border-radius:8px;box-sizing:border-box}
+button{width:100%;padding:14px;background:#16a34a;color:#fff;border:none;border-radius:9px;font-weight:800;margin-top:10px;cursor:pointer}
+label{font-size:12px;font-weight:700;color:#64748b}
+</style>
+</head>
+<body>
+<div class="card">
+<h2>📥 Achat Stock - {{p.nom}}</h2>
+<p>Stock actuel: <b>{{p.stock}}</b> | Achat: {{p.prix_achat}} | Vente: {{p.prix_vente}} | Bénéf: {{p.prix_vente - p.prix_achat}}</p>
+<form method="POST">
+<label>Quantité achetée</label>
+<input name="qte" type="number" placeholder="Ex: 20" required>
+<label>Nouveau Prix Achat (si changé)</label>
+<input name="achat" type="number" value="{{p.prix_achat}}">
+<label>Nouveau Prix Vente (si changé)</label>
+<input name="vente" type="number" value="{{p.prix_vente}}">
+<button type="submit">✅ Valider Achat</button>
+<a href="/stock" style="display:block;text-align:center;margin-top:10px;text-decoration:none;color:#64748b">Annuler</a>
+</form>
+</div>
+</body>
+</html>
